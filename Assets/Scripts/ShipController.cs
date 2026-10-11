@@ -9,7 +9,10 @@ public sealed class ShipController : MonoBehaviour
     private const float MaximumSailRotation = 45f;
 
     [SerializeField]
-    private Transform sailPivot;
+    private Transform sailAnchor;
+
+    [SerializeField, Range(0.01f, 0.3f)]
+    private float closedSailFraction = 0.08f;
 
     [SerializeField, Range(0f, 100f)]
     private float sailOpening;
@@ -28,6 +31,7 @@ public sealed class ShipController : MonoBehaviour
         sailRotation = Mathf.Clamp(sailRotation, MinimumSailRotation, MaximumSailRotation);
 
         ApplySailRotation();
+        ApplySailOpening();
     }
 
     public void ChangeSailOpening(float amount)
@@ -44,6 +48,7 @@ public sealed class ShipController : MonoBehaviour
         }
 
         sailOpening = newOpening;
+        ApplySailOpening();
         StateChanged?.Invoke();
     }
 
@@ -67,11 +72,24 @@ public sealed class ShipController : MonoBehaviour
 
     private void ApplySailRotation()
     {
-        if (sailPivot == null)
+        if (sailAnchor == null)
         {
             return;
         }
 
-        sailPivot.localRotation = Quaternion.Euler(0f, sailRotation, 0f);
+        sailAnchor.localRotation = Quaternion.Euler(0f, sailRotation, 0f);
+    }
+
+    private void ApplySailOpening()
+    {
+        if (sailAnchor == null)
+        {
+            return;
+        }
+
+        float normalizedOpening = sailOpening / MaximumSailOpening;
+        Vector3 scale = sailAnchor.localScale;
+        scale.y = Mathf.Max(closedSailFraction, normalizedOpening);
+        sailAnchor.localScale = scale;
     }
 }
