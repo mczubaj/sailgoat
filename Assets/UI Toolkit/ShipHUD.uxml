@@ -1,7 +1,7 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
     <Style src="project://database/Assets/UI%20Toolkit/ShipHUD.uss?fileID=7433441132597879392&amp;guid=fc4c27a5a974a4d4b861520cba8a88b2&amp;type=3#ShipHUD"/>
     <ui:VisualElement name="hud" class="hud">
-        <ui:Label name="opening-label" text="Sail opening: 0%" class="hud-label"/>
-        <ui:Label name="rotation-label" text="Sail rotation: 0°" class="hud-label"/>
+        <ui:Label name="opening-label" text="Sail opening: 0%" __unity-builder-selected-element="selected" authoring-id="-2092697391" class="hud-label"/>
+        <ui:Label name="rotation-label" text="Sail rotation: 0°" authoring-id="520548530" class="hud-label"/>
     </ui:VisualElement>
 </ui:UXML>

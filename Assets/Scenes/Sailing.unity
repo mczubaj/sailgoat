@@ -748,6 +748,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ShipHud
   shipController: {fileID: 227790739}
+  openingLabelReference:
+    m_PanelRenderer: {fileID: 1164879118}
+    m_AuthoringPath:
+      m_PathIds: d1f84383
+  rotationLabelReference:
+    m_PanelRenderer: {fileID: 1164879118}
+    m_AuthoringPath:
+      m_PathIds: b2f0061f
 --- !u!1 &1467554045
 GameObject:
   m_ObjectHideFlags: 0
