@@ -27,6 +27,10 @@ namespace Sailgoat
         [SerializeField, Min(0f)]
         private float maximumSpeed = 10f;
 
+        [Header("Steering")]
+        [SerializeField, Min(0f)]
+        private float turnSensitivity = 15f;
+
         private Vector3 velocity;
 
         [Header("Telemetry (Debug)")]
@@ -35,6 +39,9 @@ namespace Sailgoat
 
         [SerializeField]
         private float currentThrust;
+
+        [SerializeField]
+        private float currentTurnRate;
 
         private void Update()
         {
@@ -61,10 +68,24 @@ namespace Sailgoat
             // The force acts normal to the sail surface.
             Vector3 sailForceVector = sailDirection * totalSailForce;
 
-            // Decompose force: only the forward component pushes the hull forward.
-            // The lateral component (Dot with transform.right) is absorbed/wasted by keel drag.
-            float forwardThrust = Mathf.Max(0f, Vector3.Dot(sailForceVector, transform.forward));
+            // 1. Steering & Rotation (Yaw):
+            // Lateral component pushes sideways on the mast, creating a turning moment.
+            float lateralForce = Vector3.Dot(sailForceVector, transform.right);
 
+            // Steerageway: ships turn better with water flowing past the hull (speed).
+            // A small baseline (0.15) allows gentle turning even at low speeds.
+            float normalizedSpeed = Mathf.Clamp01(velocity.magnitude / maximumSpeed);
+            float steerageFactor = Mathf.Lerp(0.15f, 1f, normalizedSpeed);
+
+            currentTurnRate = lateralForce * turnSensitivity * steerageFactor;
+            transform.Rotate(0f, currentTurnRate * Time.deltaTime, 0f);
+
+            // The keel forces existing momentum to follow the new hull heading.
+            velocity = transform.forward * velocity.magnitude;
+
+            // 2. Forward Propulsion (Acceleration):
+            // Forward component pushes the hull forward along the newly oriented heading.
+            float forwardThrust = Mathf.Max(0f, Vector3.Dot(sailForceVector, transform.forward));
             Vector3 thrust = transform.forward * forwardThrust;
 
             velocity += thrust * Time.deltaTime;
