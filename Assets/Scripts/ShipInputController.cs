@@ -1,46 +1,53 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public sealed class ShipInputController : MonoBehaviour
+namespace Sailgoat
 {
-    [SerializeField]
-    private ShipController shipController;
-
-    [SerializeField]
-    private InputActionReference sailOpeningAction;
-
-    [SerializeField]
-    private InputActionReference sailRotationAction;
-
-    [SerializeField, Min(0f)]
-    private float openingChangePerSecond = 50f;
-
-    [SerializeField, Min(0f)]
-    private float rotationChangePerSecond = 45f;
-
-    private void OnEnable()
+    public sealed class ShipInputController : MonoBehaviour
     {
-        sailOpeningAction.action?.Enable();
-        sailRotationAction.action?.Enable();
-    }
+        [SerializeField]
+        private ShipController shipController;
 
-    private void OnDisable()
-    {
-        sailOpeningAction.action?.Disable();
-        sailRotationAction.action?.Disable();
-    }
+        [SerializeField]
+        private InputActionReference sailOpeningAction;
 
-    private void Update()
-    {
-        if (shipController == null)
+        [SerializeField]
+        private InputActionReference sailRotationAction;
+
+        [SerializeField, Min(0f)]
+        private float openingChangePerSecond = 50f;
+
+        [SerializeField, Min(0f)]
+        private float rotationChangePerSecond = 45f;
+
+        private void OnEnable()
         {
-            return;
+            sailOpeningAction.action?.Enable();
+            sailRotationAction.action?.Enable();
         }
 
-        float openingInput = sailOpeningAction.action.ReadValue<float>();
-        float rotationInput = sailRotationAction.action.ReadValue<float>();
+        private void OnDisable()
+        {
+            sailOpeningAction.action?.Disable();
+            sailRotationAction.action?.Disable();
+        }
 
-        shipController.ChangeSailOpening(openingInput * openingChangePerSecond * Time.deltaTime);
-        shipController.ChangeSailRotation(rotationInput * rotationChangePerSecond * Time.deltaTime);
+        private void Update()
+        {
+            if (shipController == null)
+            {
+                return;
+            }
+
+            float openingInput = sailOpeningAction.action.ReadValue<float>();
+            float rotationInput = sailRotationAction.action.ReadValue<float>();
+
+            shipController.ChangeSailOpening(
+                openingInput * openingChangePerSecond * Time.deltaTime
+            );
+            shipController.ChangeSailRotation(
+                rotationInput * rotationChangePerSecond * Time.deltaTime
+            );
+        }
     }
 }
