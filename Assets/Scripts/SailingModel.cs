@@ -10,7 +10,7 @@ public sealed class SailingModel : MonoBehaviour
     [SerializeField, Min(0f)]
     private float windStrength = 1f;
 
-    [SerializeField]
+    [SerializeField, Range(0f, 360f)]
     private float windDirectionDegrees = 0f;
 
     public float WindDirectionDegrees => windDirectionDegrees;
@@ -49,6 +49,8 @@ public sealed class SailingModel : MonoBehaviour
             windDirection * windStrength * sailOpening * windEffectiveness * acceleration;
 
         velocity += thrust * Time.deltaTime;
+        // reminder to self that this is less accurate/natural and can produce negative speeds:
+        // velocity *= 1f - drag * Time.deltaTime;
         velocity *= Mathf.Exp(-drag * Time.deltaTime);
         velocity = Vector3.ClampMagnitude(velocity, maximumSpeed);
 
