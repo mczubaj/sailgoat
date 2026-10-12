@@ -13,6 +13,17 @@
 .hud-label {
     color: white;
     font-size: 20px;
-    
     margin-bottom: 6px;
+}
+
+.wind-arrow {
+    position: absolute;
+    right: 30px;
+    bottom: 30px;
+    width: 60px;
+    height: 60px;
+
+    background-image: url('WindArrow.svg');
+    -unity-background-scale-mode: scale-to-fit;
+    transform-origin: 50% 50%;
 }

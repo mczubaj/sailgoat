@@ -13,6 +13,8 @@ public sealed class SailingModel : MonoBehaviour
     [SerializeField]
     private float windDirectionDegrees = 0f;
 
+    public float WindDirectionDegrees => windDirectionDegrees;
+
     [Header("Movement")]
     [SerializeField, Min(0f)]
     private float acceleration = 4f;
