@@ -29,6 +29,13 @@ namespace Sailgoat
 
         private Vector3 velocity;
 
+        [Header("Telemetry (Debug)")]
+        [SerializeField]
+        private float currentSpeed;
+
+        [SerializeField]
+        private float currentThrust;
+
         private void Update()
         {
             if (shipController == null)
@@ -63,6 +70,9 @@ namespace Sailgoat
             velocity += thrust * Time.deltaTime;
             velocity *= Mathf.Exp(-drag * Time.deltaTime);
             velocity = Vector3.ClampMagnitude(velocity, maximumSpeed);
+
+            currentThrust = forwardThrust;
+            currentSpeed = velocity.magnitude;
 
             transform.position += velocity * Time.deltaTime;
         }
