@@ -45,12 +45,20 @@ public sealed class SailingModel : MonoBehaviour
 
         float windEffectiveness = Mathf.Max(0f, windAlignment);
 
-        Vector3 thrust =
-            windDirection * windStrength * sailOpening * windEffectiveness * acceleration;
+        // Total aerodynamic force magnitude caught by the sail:
+        float totalSailForce =
+            windStrength * sailOpening * windEffectiveness * acceleration;
+
+        // The force acts normal to the sail surface:
+        Vector3 sailForceVector = sailDirection * totalSailForce;
+
+        // Decompose force: only the forward component pushes the hull forward.
+        // The lateral component (Dot with transform.right) is absorbed/wasted by keel drag.
+        float forwardThrust = Mathf.Max(0f, Vector3.Dot(sailForceVector, transform.forward));
+
+        Vector3 thrust = transform.forward * forwardThrust;
 
         velocity += thrust * Time.deltaTime;
-        // reminder to self that this is less accurate/natural and can produce negative speeds:
-        // velocity *= 1f - drag * Time.deltaTime;
         velocity *= Mathf.Exp(-drag * Time.deltaTime);
         velocity = Vector3.ClampMagnitude(velocity, maximumSpeed);
 
