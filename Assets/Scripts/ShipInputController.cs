@@ -39,8 +39,8 @@ namespace Sailgoat
                 return;
             }
 
-            float openingInput = sailOpeningAction.action.ReadValue<float>();
-            float rotationInput = sailRotationAction.action.ReadValue<float>();
+            float openingInput = sailOpeningAction?.action?.ReadValue<float>() ?? 0f;
+            float rotationInput = sailRotationAction?.action?.ReadValue<float>() ?? 0f;
 
             shipController.ChangeSailOpening(
                 openingInput * openingChangePerSecond * Time.deltaTime
