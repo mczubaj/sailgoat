@@ -163,6 +163,7 @@ GameObject:
   - component: {fileID: 227790739}
   - component: {fileID: 227790738}
   - component: {fileID: 227790740}
+  - component: {fileID: 227790741}
   m_Layer: 0
   m_Name: Ship
   m_TagString: Untagged
@@ -245,6 +246,42 @@ MonoBehaviour:
   currentThrust: 0
   currentTurnRate: 0
   currentApparentWind: 0
+  currentLateralForce: 0
+--- !u!114 &227790741
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 227790736}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0df1062dbace4ec987c883a293405564, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ShipVisuals
+  sailingModel: {fileID: 227790740}
+  visualRoot: {fileID: 0}
+  heelSensitivity: 3.5
+  maxHeelAngle: 22
+  heelSmoothSpeed: 5
+  turnRollSensitivity: 0.1
+  pitchSensitivity: 0.6
+  maxPitchAngle: 6
+  pitchSmoothSpeed: 4
+  enableBobbing: 1
+  bobFrequency: 1.2
+  bobHeight: 0.035
+  idleRollAngle: 1.2
+  idlePitchAngle: 0.8
+  enableWake: 1
+  portWake: {fileID: 0}
+  starboardWake: {fileID: 0}
+  wakeMaterial: {fileID: 2100000, guid: af35189fb4754079bfe51aa2c3883f68, type: 2}
+  minWakeSpeed: 0.2
+  maxWakeWidth: 0.35
+  wakeLifetime: 2.5
+  portWakeOffset: {x: -0.55, y: -0.08, z: -1.45}
+  starboardWakeOffset: {x: 0.55, y: -0.08, z: -1.45}
 --- !u!1 &330585543
 GameObject:
   m_ObjectHideFlags: 0

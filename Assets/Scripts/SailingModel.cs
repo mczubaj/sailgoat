@@ -70,6 +70,17 @@ namespace Sailgoat
         [SerializeField]
         private float currentApparentWind;
 
+        [Tooltip("Current lateral force causing drift/heeling.")]
+        [SerializeField]
+        private float currentLateralForce;
+
+        public float CurrentSpeed => currentSpeed;
+        public float CurrentThrust => currentThrust;
+        public float CurrentTurnRate => currentTurnRate;
+        public float CurrentApparentWind => currentApparentWind;
+        public float CurrentLateralForce => currentLateralForce;
+        public Vector3 Velocity => velocity;
+
         private void Update()
         {
             if (shipController == null)
@@ -151,6 +162,7 @@ namespace Sailgoat
             currentThrust = forwardThrust;
             currentTurnRate = angularVelocity;
             currentApparentWind = apparentWindSpeed;
+            currentLateralForce = lateralForce;
         }
     }
 }
