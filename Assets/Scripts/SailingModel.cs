@@ -27,11 +27,18 @@ namespace Sailgoat
         [SerializeField, Min(0f)]
         private float maximumSpeed = 10f;
 
+        [SerializeField, Min(0f)]
+        private float keelGrip = 5f;
+
         [Header("Steering")]
         [SerializeField, Min(0f)]
         private float turnSensitivity = 15f;
 
+        [SerializeField, Min(0f)]
+        private float angularDrag = 2f;
+
         private Vector3 velocity;
+        private float angularVelocity;
 
         [Header("Telemetry (Debug)")]
         [SerializeField]
@@ -74,7 +81,8 @@ namespace Sailgoat
             float windEffectiveness = Mathf.Max(0f, windAlignment);
 
             // Total aerodynamic force magnitude caught by the sail scales with apparent wind speed:
-            float totalSailForce = apparentWindSpeed * sailOpening * windEffectiveness * acceleration;
+            float totalSailForce =
+                apparentWindSpeed * sailOpening * windEffectiveness * acceleration;
 
             // The force acts normal to the sail surface.
             Vector3 sailForceVector = sailDirection * totalSailForce;
@@ -88,11 +96,21 @@ namespace Sailgoat
             float normalizedSpeed = Mathf.Clamp01(velocity.magnitude / maximumSpeed);
             float steerageFactor = Mathf.Lerp(0.15f, 1f, normalizedSpeed);
 
-            currentTurnRate = lateralForce * turnSensitivity * steerageFactor;
-            transform.Rotate(0f, currentTurnRate * Time.deltaTime, 0f);
+            // Torque produces angular acceleration, while water angular drag dampens rotation:
+            float turnTorque = lateralForce * turnSensitivity * steerageFactor;
+            angularVelocity += turnTorque * Time.deltaTime;
+            angularVelocity *= Mathf.Exp(-angularDrag * Time.deltaTime);
 
-            // The keel forces existing momentum to follow the new hull heading.
-            velocity = transform.forward * velocity.magnitude;
+            transform.Rotate(0f, angularVelocity * Time.deltaTime, 0f);
+
+            // Keel (Anisotropic Drag):
+            // Keel resists lateral sliding, smoothly aligning the boat's velocity with its forward direction.
+            Vector3 targetVelocity = transform.forward * velocity.magnitude;
+            velocity = Vector3.Lerp(
+                velocity,
+                targetVelocity,
+                1f - Mathf.Exp(-keelGrip * Time.deltaTime)
+            );
 
             // 2. Forward Propulsion (Acceleration):
             // Forward component pushes the hull forward along the newly oriented heading.
@@ -105,6 +123,7 @@ namespace Sailgoat
 
             currentThrust = forwardThrust;
             currentSpeed = velocity.magnitude;
+            currentTurnRate = angularVelocity;
             apparentWindSpeedDebug = apparentWindSpeed;
 
             transform.position += velocity * Time.deltaTime;
