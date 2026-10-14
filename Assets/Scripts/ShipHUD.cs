@@ -21,6 +21,21 @@ namespace Sailgoat
         [SerializeField]
         private VisualElementReference<VisualElement> windArrowReference = new();
 
+        [Header("Debug")]
+        [Tooltip("Toggle wind direction arrow visibility on the HUD (defaults to off).")]
+        [SerializeField]
+        private bool showWindArrow;
+
+        public bool ShowWindArrow
+        {
+            get => showWindArrow;
+            set
+            {
+                showWindArrow = value;
+                ApplyWindArrowVisibility();
+            }
+        }
+
         private Label openingLabel;
         private Label rotationLabel;
         private VisualElement windArrow;
@@ -68,6 +83,11 @@ namespace Sailgoat
             UpdateWindDisplay();
         }
 
+        private void OnValidate()
+        {
+            ApplyWindArrowVisibility();
+        }
+
         private void OnOpeningLabelResolved(Label label)
         {
             openingLabel = label;
@@ -99,6 +119,7 @@ namespace Sailgoat
         private void OnWindArrowResolved(VisualElement arrow)
         {
             windArrow = arrow;
+            ApplyWindArrowVisibility();
             UpdateWindDisplay();
         }
 
@@ -107,6 +128,14 @@ namespace Sailgoat
             if (windArrow == arrow)
             {
                 windArrow = null;
+            }
+        }
+
+        private void ApplyWindArrowVisibility()
+        {
+            if (windArrow != null)
+            {
+                windArrow.style.display = showWindArrow ? DisplayStyle.Flex : DisplayStyle.None;
             }
         }
 
@@ -130,7 +159,7 @@ namespace Sailgoat
 
         private void UpdateWindDisplay()
         {
-            if ((sailingModel == null) || (windArrow == null))
+            if ((sailingModel == null) || (windArrow == null) || !showWindArrow)
             {
                 return;
             }

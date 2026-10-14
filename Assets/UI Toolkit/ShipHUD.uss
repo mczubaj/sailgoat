@@ -26,4 +26,5 @@
     background-image: url('WindArrow.svg');
     -unity-background-scale-mode: scale-to-fit;
     transform-origin: 50% 50%;
+    display: none;
 }

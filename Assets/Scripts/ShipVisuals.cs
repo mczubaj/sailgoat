@@ -355,4 +355,3 @@ namespace Sailgoat
         }
     }
 }
-
