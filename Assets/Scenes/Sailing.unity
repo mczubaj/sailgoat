@@ -1082,6 +1082,7 @@ GameObject:
   - component: {fileID: 1772960818}
   - component: {fileID: 1772960817}
   - component: {fileID: 1772960816}
+  - component: {fileID: 1772960820}
   m_Layer: 0
   m_Name: Water
   m_TagString: Untagged
@@ -1178,11 +1179,29 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 10, y: 1, z: 10}
+  m_LocalScale: {x: 50, y: 1, z: 50}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1772960820
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1772960815}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77fbf922b6f642e69915b61bac456371, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WaterPlane
+  target: {fileID: 227790737}
+  snapInterval: 2
+  waterColor: {r: 0, g: 0.669809, b: 1, a: 1}
+  gridLineColor: {r: 0.35, g: 0.85, b: 1, a: 1}
+  gridSizeMeters: 2
+  lineThickness: 0.005
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
