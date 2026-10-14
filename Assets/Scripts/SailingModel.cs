@@ -43,6 +43,9 @@ namespace Sailgoat
         [SerializeField]
         private float currentTurnRate;
 
+        [SerializeField]
+        private float apparentWindSpeedDebug;
+
         private void Update()
         {
             if (shipController == null)
@@ -50,20 +53,28 @@ namespace Sailgoat
                 return;
             }
 
-            Vector3 windDirection =
-                Quaternion.Euler(0f, windDirectionDegrees, 0f) * Vector3.forward;
+            // 1. Apparent Wind calculation:
+            // True environmental wind:
+            Vector3 trueWind =
+                Quaternion.Euler(0f, windDirectionDegrees, 0f) * Vector3.forward * windStrength;
+
+            // Apparent wind experienced on the moving boat (True Wind - Boat Velocity):
+            Vector3 apparentWind = trueWind - velocity;
+            float apparentWindSpeed = apparentWind.magnitude;
+            Vector3 apparentWindDir = apparentWind.normalized;
 
             float sailOpening = shipController.SailOpening / 100f;
             float sailAngle = shipController.SailRotation;
 
             Vector3 sailDirection = Quaternion.Euler(0f, sailAngle, 0f) * transform.forward;
 
-            float windAlignment = Vector3.Dot(sailDirection, windDirection);
+            // The sail catches wind relative to the apparent wind direction:
+            float windAlignment = Vector3.Dot(sailDirection, apparentWindDir);
 
             float windEffectiveness = Mathf.Max(0f, windAlignment);
 
-            // Total aerodynamic force magnitude caught by the sail.
-            float totalSailForce = windStrength * sailOpening * windEffectiveness * acceleration;
+            // Total aerodynamic force magnitude caught by the sail scales with apparent wind speed:
+            float totalSailForce = apparentWindSpeed * sailOpening * windEffectiveness * acceleration;
 
             // The force acts normal to the sail surface.
             Vector3 sailForceVector = sailDirection * totalSailForce;
@@ -94,6 +105,7 @@ namespace Sailgoat
 
             currentThrust = forwardThrust;
             currentSpeed = velocity.magnitude;
+            apparentWindSpeedDebug = apparentWindSpeed;
 
             transform.position += velocity * Time.deltaTime;
         }
