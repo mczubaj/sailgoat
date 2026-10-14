@@ -4,6 +4,7 @@ using UnityEngine;
 namespace Sailgoat
 {
     /// <summary>
+    /// VIBECODED! Just for more fun and clarity when testing
     /// Handles physical visual feedback for the ship:
     /// - Leeward heeling (rolling away from the wind based on lateral sail force).
     /// - Bow rise and pitch response to forward thrust.
