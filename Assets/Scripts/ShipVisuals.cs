@@ -16,7 +16,9 @@ namespace Sailgoat
         [SerializeField]
         private SailingModel sailingModel;
 
-        [Tooltip("The container holding visual meshes (Hull, Mast, etc.). If null, a 'Visuals' container is automatically created/resolved.")]
+        [Tooltip(
+            "The container holding visual meshes (Hull, Mast, etc.). If null, a 'Visuals' container is automatically created/resolved."
+        )]
         [SerializeField]
         private Transform visualRoot;
 
@@ -106,6 +108,7 @@ namespace Sailgoat
         // Internal State
         private float currentHeel;
         private float currentPitch;
+        private float bobPhase;
         private Vector3 initialVisualLocalPosition;
 
         private void Awake()
@@ -170,7 +173,11 @@ namespace Sailgoat
                 }
 
                 // Hull, Mast, and other renderers belong in the visual container
-                if (child.name.Contains("Hull") || child.name.Contains("Mast") || child.GetComponentInChildren<Renderer>() != null)
+                if (
+                    child.name.Contains("Hull")
+                    || child.name.Contains("Mast")
+                    || child.GetComponentInChildren<Renderer>() != null
+                )
                 {
                     childrenToReparent.Add(child);
                 }
@@ -221,8 +228,17 @@ namespace Sailgoat
             // Fading white foam gradient
             Gradient gradient = new Gradient();
             gradient.SetKeys(
-                new[] { new GradientColorKey(Color.white, 0f), new GradientColorKey(new Color(0.9f, 0.95f, 1f), 1f) },
-                new[] { new GradientAlphaKey(0.6f, 0f), new GradientAlphaKey(0.3f, 0.5f), new GradientAlphaKey(0f, 1f) }
+                new[]
+                {
+                    new GradientColorKey(Color.white, 0f),
+                    new GradientColorKey(new Color(0.9f, 0.95f, 1f), 1f),
+                },
+                new[]
+                {
+                    new GradientAlphaKey(0.6f, 0f),
+                    new GradientAlphaKey(0.3f, 0.5f),
+                    new GradientAlphaKey(0f, 1f),
+                }
             );
             trail.colorGradient = gradient;
 
@@ -239,15 +255,13 @@ namespace Sailgoat
             }
             else
             {
-                Shader shader = Shader.Find("Universal Render Pipeline/Particles/Unlit")
-                             ?? Shader.Find("Universal Render Pipeline/Unlit")
-                             ?? Shader.Find("Sprites/Default");
+                Shader shader =
+                    Shader.Find("Universal Render Pipeline/Particles/Unlit")
+                    ?? Shader.Find("Universal Render Pipeline/Unlit")
+                    ?? Shader.Find("Sprites/Default");
                 if (shader != null)
                 {
-                    Material mat = new Material(shader)
-                    {
-                        name = "RuntimeWakeMaterial"
-                    };
+                    Material mat = new Material(shader) { name = "RuntimeWakeMaterial" };
                     trail.material = mat;
                 }
             }
@@ -268,14 +282,22 @@ namespace Sailgoat
             targetHeel -= sailingModel.CurrentTurnRate * turnRollSensitivity;
             targetHeel = Mathf.Clamp(targetHeel, -maxHeelAngle, maxHeelAngle);
 
-            currentHeel = Mathf.Lerp(currentHeel, targetHeel, 1f - Mathf.Exp(-heelSmoothSpeed * dt));
+            currentHeel = Mathf.Lerp(
+                currentHeel,
+                targetHeel,
+                1f - Mathf.Exp(-heelSmoothSpeed * dt)
+            );
 
             // --- Pitch (Bow rise around X axis) ---
             // Forward thrust lifts the bow slightly (negative X in Unity).
             float targetPitch = -sailingModel.CurrentThrust * pitchSensitivity;
             targetPitch = Mathf.Clamp(targetPitch, -maxPitchAngle, maxPitchAngle);
 
-            currentPitch = Mathf.Lerp(currentPitch, targetPitch, 1f - Mathf.Exp(-pitchSmoothSpeed * dt));
+            currentPitch = Mathf.Lerp(
+                currentPitch,
+                targetPitch,
+                1f - Mathf.Exp(-pitchSmoothSpeed * dt)
+            );
 
             // --- Ocean Swell & Floating Bobbing ---
             float bobRoll = 0f;
@@ -284,17 +306,20 @@ namespace Sailgoat
 
             if (enableBobbing)
             {
-                // Speed increases wave encounter frequency slightly
-                float speedMultiplier = 1f + (speed * 0.12f);
-                float t = Time.time * bobFrequency * speedMultiplier;
+                float speedMultiplier = 1f + Mathf.Clamp(speed * 0.1f, 0f, 2f);
+                bobPhase += dt * bobFrequency * speedMultiplier;
 
-                bobRoll = Mathf.Sin(t) * idleRollAngle;
-                bobPitch = Mathf.Cos(t * 0.85f) * idlePitchAngle;
-                bobY = Mathf.Sin(t * 1.3f) * bobHeight;
+                bobRoll = Mathf.Sin(bobPhase) * idleRollAngle;
+                bobPitch = Mathf.Cos(bobPhase * 0.85f) * idlePitchAngle;
+                bobY = Mathf.Sin(bobPhase * 1.3f) * bobHeight;
             }
 
             // Apply orientation & buoyancy to visual root
-            Quaternion targetRotation = Quaternion.Euler(currentPitch + bobPitch, 0f, currentHeel + bobRoll);
+            Quaternion targetRotation = Quaternion.Euler(
+                currentPitch + bobPitch,
+                0f,
+                currentHeel + bobRoll
+            );
             visualRoot.localRotation = targetRotation;
             visualRoot.localPosition = initialVisualLocalPosition + new Vector3(0f, bobY, 0f);
         }

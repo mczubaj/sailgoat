@@ -237,7 +237,7 @@ MonoBehaviour:
   windStrength: 3
   windDirectionDegrees: 0
   acceleration: 4
-  drag: 0.5
+  drag: 0.25
   maximumSpeed: 10
   keelGrip: 15
   turnSensitivity: 25
@@ -1201,7 +1201,7 @@ MonoBehaviour:
   waterColor: {r: 0, g: 0.669809, b: 1, a: 1}
   gridLineColor: {r: 0.35, g: 0.85, b: 1, a: 1}
   gridSizeMeters: 2
-  lineThickness: 0.005
+  lineThickness: 0.01
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
