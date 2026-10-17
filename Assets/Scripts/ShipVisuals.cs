@@ -4,11 +4,10 @@ using UnityEngine;
 namespace Sailgoat
 {
     /// <summary>
-    /// VIBECODED! Just for more fun and clarity when testing
+    /// VIBECODED! Just for more clarity when testing, review and replace with proper implementation later.
     /// Handles physical visual feedback for the ship:
     /// - Leeward heeling (rolling away from the wind based on lateral sail force).
     /// - Bow rise and pitch response to forward thrust.
-    /// - Idle oceanic swell and bobbing (buoyancy rocking).
     /// - Dual wake trails at the stern quarters showing path, turning arc, and speed.
     /// </summary>
     public sealed class ShipVisuals : MonoBehaviour
@@ -53,26 +52,6 @@ namespace Sailgoat
         [SerializeField, Min(0.1f)]
         private float pitchSmoothSpeed = 4f;
 
-        [Header("Ocean Swell & Buoyancy Bobbing")]
-        [SerializeField]
-        private bool enableBobbing = true;
-
-        [Tooltip("Base frequency of ocean water rocking.")]
-        [SerializeField, Min(0f)]
-        private float bobFrequency = 1.2f;
-
-        [Tooltip("Vertical bobbing amplitude in meters.")]
-        [SerializeField, Min(0f)]
-        private float bobHeight = 0.035f;
-
-        [Tooltip("Idle roll rocking amplitude in degrees.")]
-        [SerializeField, Min(0f)]
-        private float idleRollAngle = 1.2f;
-
-        [Tooltip("Idle pitch rocking amplitude in degrees.")]
-        [SerializeField, Min(0f)]
-        private float idlePitchAngle = 0.8f;
-
         [Header("Wake Trails")]
         [SerializeField]
         private bool enableWake = true;
@@ -109,8 +88,6 @@ namespace Sailgoat
         // Internal State
         private float currentHeel;
         private float currentPitch;
-        private float bobPhase;
-        private Vector3 initialVisualLocalPosition;
 
         private void Awake()
         {
@@ -121,14 +98,6 @@ namespace Sailgoat
 
             ResolveVisualRoot();
             SetupWakeTrails();
-        }
-
-        private void Start()
-        {
-            if (visualRoot != null)
-            {
-                initialVisualLocalPosition = visualRoot.localPosition;
-            }
         }
 
         private void LateUpdate()
@@ -274,7 +243,6 @@ namespace Sailgoat
         private void UpdateShipAttitude()
         {
             float dt = Time.deltaTime;
-            float speed = sailingModel.CurrentSpeed;
 
             // --- Heeling (Roll around Z axis) ---
             // Sailboat heels away from the wind: lateralForce > 0 rolls starboard (negative Z).
@@ -300,29 +268,8 @@ namespace Sailgoat
                 1f - Mathf.Exp(-pitchSmoothSpeed * dt)
             );
 
-            // --- Ocean Swell & Floating Bobbing ---
-            float bobRoll = 0f;
-            float bobPitch = 0f;
-            float bobY = 0f;
-
-            if (enableBobbing)
-            {
-                float speedMultiplier = 1f + Mathf.Clamp(speed * 0.1f, 0f, 2f);
-                bobPhase += dt * bobFrequency * speedMultiplier;
-
-                bobRoll = Mathf.Sin(bobPhase) * idleRollAngle;
-                bobPitch = Mathf.Cos(bobPhase * 0.85f) * idlePitchAngle;
-                bobY = Mathf.Sin(bobPhase * 1.3f) * bobHeight;
-            }
-
-            // Apply orientation & buoyancy to visual root
-            Quaternion targetRotation = Quaternion.Euler(
-                currentPitch + bobPitch,
-                0f,
-                currentHeel + bobRoll
-            );
-            visualRoot.localRotation = targetRotation;
-            visualRoot.localPosition = initialVisualLocalPosition + new Vector3(0f, bobY, 0f);
+            // Apply orientation to visual root
+            visualRoot.localRotation = Quaternion.Euler(currentPitch, 0f, currentHeel);
         }
 
         private void UpdateWakeTrails()

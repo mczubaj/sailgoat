@@ -3,7 +3,7 @@ using UnityEngine;
 namespace Sailgoat
 {
     /// <summary>
-    /// VIBECODED, including the water grid shader! Just for more fun and clarity when testing
+    /// VIBECODED! Just for more clarity when testing, review and replace with proper implementation later.
     /// Snaps the water plane to follow the ship in discrete world grid intervals,
     /// providing an infinite flat ocean without moving the world grid lines.
     /// Also exposes grid and water visual controls directly in the Inspector.
