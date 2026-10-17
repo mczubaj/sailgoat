@@ -4,5 +4,4 @@
         <ui:Label name="opening-label" text="Sail opening: 0%" authoring-id="-2092697391" class="hud-label"/>
         <ui:Label name="rotation-label" text="Sail rotation: 0°" authoring-id="520548530" class="hud-label"/>
     </ui:VisualElement>
-    <ui:VisualElement name="wind-arrow" authoring-id="1234567890" class="wind-arrow"/>
 </ui:UXML>

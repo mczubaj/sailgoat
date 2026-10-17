@@ -810,7 +810,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ShipHud
   shipController: {fileID: 227790739}
-  sailingModel: {fileID: 227790740}
   openingLabelReference:
     m_PanelRenderer: {fileID: 1164879118}
     m_AuthoringPath:
@@ -819,11 +818,6 @@ MonoBehaviour:
     m_PanelRenderer: {fileID: 1164879118}
     m_AuthoringPath:
       m_PathIds: b2f0061f
-  windArrowReference:
-    m_PanelRenderer: {fileID: 1164879118}
-    m_AuthoringPath:
-      m_PathIds: d2029649
-  showWindArrow: 0
 --- !u!1 &1467554045
 GameObject:
   m_ObjectHideFlags: 0

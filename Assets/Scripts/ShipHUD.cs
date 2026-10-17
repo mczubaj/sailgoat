@@ -10,35 +10,13 @@ namespace Sailgoat
         private ShipController shipController;
 
         [SerializeField]
-        private SailingModel sailingModel;
-
-        [SerializeField]
         private VisualElementReference<Label> openingLabelReference = new();
 
         [SerializeField]
         private VisualElementReference<Label> rotationLabelReference = new();
 
-        [SerializeField]
-        private VisualElementReference<VisualElement> windArrowReference = new();
-
-        [Header("Debug")]
-        [Tooltip("Toggle wind direction arrow visibility on the HUD (defaults to off).")]
-        [SerializeField]
-        private bool showWindArrow;
-
-        public bool ShowWindArrow
-        {
-            get => showWindArrow;
-            set
-            {
-                showWindArrow = value;
-                ApplyWindArrowVisibility();
-            }
-        }
-
         private Label openingLabel;
         private Label rotationLabel;
-        private VisualElement windArrow;
 
         private void OnEnable()
         {
@@ -47,9 +25,6 @@ namespace Sailgoat
 
             rotationLabelReference.RegisterReferenceResolvedCallback(OnRotationLabelResolved);
             rotationLabelReference.RegisterReferenceUnloadedCallback(OnRotationLabelUnloaded);
-
-            windArrowReference.RegisterReferenceResolvedCallback(OnWindArrowResolved);
-            windArrowReference.RegisterReferenceUnloadedCallback(OnWindArrowUnloaded);
 
             if (shipController != null)
             {
@@ -65,9 +40,6 @@ namespace Sailgoat
             rotationLabelReference.UnregisterReferenceResolvedCallback(OnRotationLabelResolved);
             rotationLabelReference.UnregisterReferenceUnloadedCallback(OnRotationLabelUnloaded);
 
-            windArrowReference.UnregisterReferenceResolvedCallback(OnWindArrowResolved);
-            windArrowReference.UnregisterReferenceUnloadedCallback(OnWindArrowUnloaded);
-
             if (shipController != null)
             {
                 shipController.StateChanged -= RefreshLabels;
@@ -75,17 +47,6 @@ namespace Sailgoat
 
             openingLabel = null;
             rotationLabel = null;
-            windArrow = null;
-        }
-
-        private void Update()
-        {
-            UpdateWindDisplay();
-        }
-
-        private void OnValidate()
-        {
-            ApplyWindArrowVisibility();
         }
 
         private void OnOpeningLabelResolved(Label label)
@@ -116,29 +77,6 @@ namespace Sailgoat
             }
         }
 
-        private void OnWindArrowResolved(VisualElement arrow)
-        {
-            windArrow = arrow;
-            ApplyWindArrowVisibility();
-            UpdateWindDisplay();
-        }
-
-        private void OnWindArrowUnloaded(VisualElement arrow)
-        {
-            if (windArrow == arrow)
-            {
-                windArrow = null;
-            }
-        }
-
-        private void ApplyWindArrowVisibility()
-        {
-            if (windArrow != null)
-            {
-                windArrow.style.display = showWindArrow ? DisplayStyle.Flex : DisplayStyle.None;
-            }
-        }
-
         private void RefreshLabels()
         {
             if (shipController == null)
@@ -155,16 +93,6 @@ namespace Sailgoat
             {
                 rotationLabel.text = $"Sail rotation: {shipController.SailRotation:0}°";
             }
-        }
-
-        private void UpdateWindDisplay()
-        {
-            if ((sailingModel == null) || (windArrow == null) || !showWindArrow)
-            {
-                return;
-            }
-
-            windArrow.style.rotate = new Rotate(Angle.Degrees(sailingModel.WindDirectionDegrees));
         }
     }
 }
